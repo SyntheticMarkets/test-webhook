@@ -2,6 +2,20 @@
 let currentSignal = null;
 
 export default function handler(req, res) {
+  // Handle CORS preflight request
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(200).end();
+    return;
+  }
+
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   if (req.method === 'POST') {
     // Extract the action from the request body (buy or close)
     const { action } = req.body;
@@ -24,7 +38,7 @@ export default function handler(req, res) {
     }
   } else {
     // Method not allowed for other request types
-    res.setHeader('Allow', ['POST', 'GET']);
+    res.setHeader('Allow', ['POST', 'GET', 'OPTIONS']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
